@@ -20,7 +20,13 @@
 ////////////////////////
 // Grid related stuff //
 ////////////////////////
+// This function is manually checked (Has no automated tests). States to test:
+//   - != 81 valid chars given             (Re-asks)
+//   - == 81 valid chars given, 1+ invalid (Re-asks)
+//   - == 81 valid chars given, all valid  (Returns)
 std::string getGridString() {
+    char ch;
+    bool has_invalid_char;
     std::string text ("");
 
     // Get a string that is 81 chars long from the user.
@@ -28,7 +34,24 @@ std::string getGridString() {
         std::cout << "Enter the grid: ";
         std::getline(std::cin, text);
         if (text.size() == SIZE*SIZE) {
-            break;
+            has_invalid_char = false;
+            for (unsigned int i = 0; i < text.size(); i++) {
+                ch = text[i];
+                if (ch >= '1' && ch <= '9') {
+                    continue;
+                } else if (ch == '.' || ch == '0') {
+                    continue;
+                } else {
+                    std::cout << "Invalid character '" << ch << "' at index " << i << "." << std::endl;
+                    has_invalid_char = true;
+                    break;
+                }
+            }
+            if (has_invalid_char) {
+                continue;
+            } else {
+                break;
+            }
         }
         std::cout << "Need " << SIZE*SIZE << " chars, got " << text.size() << "." << std::endl;
     }
