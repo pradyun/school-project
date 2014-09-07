@@ -17,8 +17,9 @@ std::array<int, SIZE*SIZE> Board::parse_string(std::string input) {
         } else if (ch == '0' || ch == '.') {
             retval[i] = EMPTY;
         } else {
-            std::cerr << "Invalid character '"<< ch << "' in input (index " << i << ")" << std::endl;
-            throw new InvalidGridError();
+            char error_string[50];
+            sprintf(error_string, "Invalid character '%c' in input (index %d)\n" , ch, i);
+            throw InvalidGridError((std::string) error_string);
             // InvalidInputError error;
             // throw error;
         }

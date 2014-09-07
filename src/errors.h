@@ -11,4 +11,19 @@ class InvalidInputError: public std::exception {
     */
 };
 
+class InvalidGridError: public InvalidInputError {
+
+private:
+    std::string message = "";
+
+public:
+    InvalidGridError(std::string msg) {
+        message = msg;
+    }
+
+    virtual const char* what() const throw() {
+        return message.c_str();
+    }
+};
+
 #endif
