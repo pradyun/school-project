@@ -20,11 +20,11 @@ class Board {
         Board(std::string input);
         ~Board();
 
-        bool is_solved();
         void display(std::ostream& stream);
 
-        bool is_valid(int index);
-        bool assign(int k, int val);
+        bool is_solved();
+        bool is_valid(int index, int val);
+        bool assign(int index, int val);
 
         std::array<int, SIZE> row(int index);
         std::array<int, SIZE> col(int index);

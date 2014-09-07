@@ -17,7 +17,6 @@
 #include "board.h"
 #include "solver.h"
 
-
 ////////////////////////
 // Grid related stuff //
 ////////////////////////
@@ -35,7 +34,6 @@ std::string getGridString() {
     }
     return text;
 }
-
 
 #ifdef DEBUG
 
@@ -55,7 +53,6 @@ void printArray(std::array<int, N> array) {
 }
 #endif
 
-
 int main() {
     int retval;
     std::string grid;
@@ -69,7 +66,8 @@ int main() {
     // Try to convert the string to a the board.
     try {
         board = Board(grid);
-    } catch (std::exception &err) {
+    } catch (std::exception& err) {
+        std::cerr << err.what();
         return 1;
     }
     std::cout << "Initial Board\n" << std::endl;
@@ -94,7 +92,6 @@ int main() {
     return retval;
 }
 
-#undef ERROR
 /*
     Board class
 */
