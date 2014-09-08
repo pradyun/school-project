@@ -4,6 +4,7 @@
 #include <array>
 #include <string>
 #include <iostream>
+#include <stdexcept>
 #include <math.h>
 
 #include "errors.h"
@@ -14,6 +15,8 @@ class Board {
     private:
         std::array<int, SIZE*SIZE> grid;
         std::array<int, SIZE*SIZE> parse_string(std::string input);
+        void displayNumbers(int y, std::ostream& stream);
+        void displayLineIfNeeded(int y, std::ostream& stream);
 
     public:
         Board();
@@ -22,8 +25,7 @@ class Board {
 
         void display(std::ostream& stream);
 
-        bool is_solved();
-        bool is_valid(int index, int val);
+        int get(int index);
         bool assign(int index, int val);
 
         std::array<int, SIZE> row(int index);

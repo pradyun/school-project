@@ -14,7 +14,7 @@ std::array<int, SIZE*SIZE> Board::parse_string(std::string input) {
         ch = input[i];
         if (ch >= '1' && ch <= '9') {
             retval[i] = ch - '0'; // integer value of the character.
-        } else if (ch == '0' || ch == '.') {
+        } else if (ch == '0' || ch == '.' || ch == ' ') {
             retval[i] = EMPTY;
         } else {
             char error_string[50];
@@ -26,20 +26,55 @@ std::array<int, SIZE*SIZE> Board::parse_string(std::string input) {
     }
     return retval;
 }
-
-void Board::display(std::ostream& stream) {
-    for (int i = 0; i < SIZE; i++) {
-        for (int k = 0; k < SIZE; k++) {
-            stream << grid[i + k*SIZE];
-            if (!((k + 1) % (int) sqrt(SIZE)) && ((k + 1) < SIZE)) {
-                stream << "|";
-            }
+void Board::displayNumbers(int y, std::ostream& stream) {
+    if (!(y < SIZE)) {
+        return;
+    }
+    int index, sqr_size = sqrt(SIZE);
+    stream << "| ";
+    for (int x = 0; x < SIZE; x++) {
+        index = x + y*SIZE;
+        if (grid[index] == EMPTY) {
+            stream << "  ";
+        } else {
+            stream << grid[index] << " ";
         }
-        stream << std::endl;
-        if (!((i + 1) % (int) sqrt(SIZE)) && ((i + 1) < SIZE)) {
-            stream << std::string(SIZE + (int) sqrt(SIZE), '-') << std::endl;
+        if ((x +1) % sqr_size == 0 && x != SIZE-1) {
+            stream << "| ";
         }
     }
+    stream << "|" << std::endl;
+}
+
+void Board::displayLineIfNeeded(int y, std::ostream& stream) {
+    if (y % 3 == 0) {
+        int sqr_size = sqrt(SIZE);
+        stream << "+-";
+        for (int x = 0; x < SIZE; x++) {
+            stream << "--";
+            if ((x +1) % sqr_size == 0 && x != SIZE-1) {
+                stream << "+-";
+            }
+        }
+        stream << "+" << std::endl;
+    }
+}
+
+void Board::display(std::ostream& stream) {
+    int y;
+    for (y = 0; y <= SIZE; y++) {
+        displayLineIfNeeded(y, stream);
+        displayNumbers(y, stream);
+    }
+}
+
+int Board::get(int index) {
+    if (index >= grid.size()) {
+        char buffer[50];
+        sprintf(buffer, "'index' should be less than %d.", (int) grid.size());
+        throw std::out_of_range(buffer);
+    }
+    return grid[index];
 }
 
 std::array<int, SIZE> Board::col(int index) {
