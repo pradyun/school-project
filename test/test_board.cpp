@@ -1,63 +1,63 @@
 #include <string>
 #include <sstream>
 
-#include "../src/board.h"
-#include "../src/constants.h"
-#include "gtest/gtest.h"
+#include "board.h"
 #include "gmock/gmock.h"
 
-TEST(Board, TakesValidStringWithoutError) {
-    ASSERT_NO_THROW(Board board(
-        // '0', ' ' and '.' represent empty blocks
-        "0. 456789456789123789123456234567891567891234891234567345678912678912345912345678"
-    ));
-    /*
-    +-----------------------+
-    |       | 4 5 6 | 7 8 9 |
-    | 4 5 6 | 7 8 9 | 1 2 3 |
-    | 7 8 9 | 1 2 3 | 4 5 6 |
-    |-------+-------+-------|
-    | 2 3 4 | 5 6 7 | 8 9 1 |
-    | 5 6 7 | 8 9 1 | 2 3 4 |
-    | 8 9 1 | 2 3 4 | 5 6 7 |
-    |-------+-------+-------|
-    | 3 4 5 | 6 7 8 | 9 1 2 |
-    | 6 7 8 | 9 1 2 | 3 4 5 |
-    | 9 1 2 | 3 4 5 | 6 7 8 |
-    +-----------------------+
-    */
-}
-// Even though this situation shall not occur again.
-TEST(Board, RaisesErrorOnInvalidString) {
-    ASSERT_THROW(
-        Board board(
-            "a23456789456789123789123456234567891567891234891234567345678912678912345912345678"
-        ),
-        InvalidGridError
-    );
-    /*
-    +-----------------------+
-    | a 2 3 | 4 5 6 | 7 8 9 |
-    | 4 5 6 | 7 8 9 | 1 2 3 |
-    | 7 8 9 | 1 2 3 | 4 5 6 |
-    |-------+-------+-------|
-    | 2 3 4 | 5 6 7 | 8 9 1 |
-    | 5 6 7 | 8 9 1 | 2 3 4 |
-    | 8 9 1 | 2 3 4 | 5 6 7 |
-    |-------+-------+-------|
-    | 3 4 5 | 6 7 8 | 9 1 2 |
-    | 6 7 8 | 9 1 2 | 3 4 5 |
-    | 9 1 2 | 3 4 5 | 6 7 8 |
-    +-----------------------+
-    */
+TEST(Board, ConstructorCheck) {
+    ASSERT_NO_THROW(Board board);
 }
 
-TEST(Board, DisplayFilled) {
-    std::ostringstream stream;
-    std::string expected;
-    Board board(
-        "123456789456789123789123456234567891567891234891234567345678912678912345912345678"
+TEST(Board, InitializesWithValidString) {
+    Board board;
+    ASSERT_EQ(
+        initializeBoardFromString(
+            board,
+            "0. 456789"
+            "456789123"
+            "789123456"
+            "234567891"
+            "567891234"
+            "891234567"
+            "345678912"
+            "678912345"
+            "912345678"
+        ), true
     );
+}
+
+TEST(Board, RefusesOnInitializationWithStringWithInvalidCharacter) {
+    Board board;
+    ASSERT_EQ(
+        initializeBoardFromString(
+            board,
+            "a23456789"
+            "456789123"
+            "789123456"
+            "234567891"
+            "567891234"
+            "891234567"
+            "345678912"
+            "678912345"
+            "912345678"
+        ), false
+    );
+}
+
+TEST(Board, RefusesOnInitializationWithStringWithInvalidSize) {
+    Board board;
+    ASSERT_EQ(
+        initializeBoardFromString(
+            board,
+            "2"  // Not 81 chars
+        ), false
+    );
+}
+
+TEST(Board, DisplaysFilledBoardCorrectly) {
+    std::string expected;
+    std::ostringstream stream;
+
     // Expected board
     expected.append("+-------+-------+-------+\n");
     expected.append("| 1 2 3 | 4 5 6 | 7 8 9 |\n");
@@ -73,17 +73,28 @@ TEST(Board, DisplayFilled) {
     expected.append("| 9 1 2 | 3 4 5 | 6 7 8 |\n");
     expected.append("+-------+-------+-------+\n");
 
+    Board board;
+    initializeBoardFromString(
+        board,
+        "123456789"
+        "456789123"
+        "789123456"
+        "234567891"
+        "567891234"
+        "891234567"
+        "345678912"
+        "678912345"
+        "912345678"
+    );
     board.display(stream);
 
-    ASSERT_EQ(stream.str(), expected);
+    ASSERT_EQ(expected, stream.str());
 }
 
-TEST(Board, DisplayNonFilled) {
-    std::ostringstream stream;
+TEST(Board, DisplaysUnFilledBoardCorrectly) {
     std::string expected;
-    Board board(
-        " . 0 . 0 456789123789123456234567891567891234891234567345678912678912345912345678"
-    );
+    std::ostringstream stream;
+
     // Expected board
     expected.append("+-------+-------+-------+\n");
     expected.append("|       |       |       |\n");
@@ -99,20 +110,82 @@ TEST(Board, DisplayNonFilled) {
     expected.append("| 9 1 2 | 3 4 5 | 6 7 8 |\n");
     expected.append("+-------+-------+-------+\n");
 
+
+    Board board;
+    initializeBoardFromString(
+        board,
+        " . 0 . 0 "
+        "456789123"
+        "789123456"
+        "234567891"
+        "567891234"
+        "891234567"
+        "345678912"
+        "678912345"
+        "912345678"
+    );
     board.display(stream);
 
-    ASSERT_EQ(stream.str(), expected);
+    ASSERT_EQ(expected, stream.str());
 }
 
-TEST(Board, ArrangedValuesCorrectly) {
-    Board board(
-        " . 0 . 0 456789123789123456234567891567891234891234567345678912678912345912345678"
+TEST(Board, AccessingValues) {
+    Board board;
+    ASSERT_EQ(EMPTY, board.get(0, 0));
+    ASSERT_EQ(EMPTY, board.get(1, 1));
+    ASSERT_EQ(EMPTY, board.get(4, 4));
+    ASSERT_EQ(EMPTY, board.get(4, 5));
+    ASSERT_EQ(EMPTY, board.get(8, 8));
+
+    initializeBoardFromString(
+        board,
+        " . 0 . 0 "
+        "456789123"
+        "789123456"
+        "234567891"
+        "567891234"
+        "891234567"
+        "345678912"
+        "678912345"
+        "912345678"
     );
-    ASSERT_EQ(board.get(80), 8);
-    ASSERT_EQ(board.get(40), 9);
-    ASSERT_EQ(board.get(10), 5);
-    ASSERT_EQ(board.get( 9), 4);
-    ASSERT_EQ(board.get( 8), EMPTY);
-    ASSERT_EQ(board.get( 5), EMPTY);
-    ASSERT_EQ(board.get( 0), EMPTY);
+
+    ASSERT_EQ(EMPTY, board.get(0, 0));
+
+    ASSERT_EQ(5, board.get(1, 1));
+    ASSERT_EQ(9, board.get(4, 4));
+    ASSERT_EQ(1, board.get(4, 5));
+    ASSERT_EQ(8, board.get(8, 8));
+}
+
+TEST(Board, SettingValues) {
+    Board board;
+    initializeBoardFromString(
+        board,
+        " . 0 . 0 "
+        "456789123"
+        "789123456"
+        "234567891"
+        "567891234"
+        "891234567"
+        "345678912"
+        "678912345"
+        "912345678"
+    );
+
+    ASSERT_EQ(EMPTY, board.get(0, 0));
+    ASSERT_EQ(true,  board.set(0, 0, 1));
+    ASSERT_EQ(1,     board.get(0, 0));
+
+    ASSERT_EQ(EMPTY, board.get(0, 4));
+    ASSERT_EQ(true,  board.set(0, 4, 2));
+    ASSERT_EQ(2,     board.get(0, 4));
+
+    ASSERT_EQ(EMPTY, board.get(0, 8));
+    ASSERT_EQ(true,  board.set(0, 8, 8));
+    ASSERT_EQ(8,     board.get(0, 8));
+
+    ASSERT_EQ(4,     board.get(1, 0));
+    ASSERT_EQ(true,  board.set(1, 0, EMPTY));
+    ASSERT_EQ(EMPTY, board.get(1, 0));
 }
