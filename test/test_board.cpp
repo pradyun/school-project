@@ -1,8 +1,8 @@
 #include <string>
 #include <sstream>
 
-#include "board.h"
 #include "gmock/gmock.h"
+#include "../lib/board.h"
 
 TEST(Board, ConstructorCheck) {
     ASSERT_NO_THROW(Board board);

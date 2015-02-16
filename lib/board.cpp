@@ -19,7 +19,7 @@ bool initializeBoardFromString(Board& board, std::string str) {
             char ch = str[index];
             if (ch >= '0' && ch <= '9') {
                 grid[row][col] = ch - '0';
-            } else if (ch == '.' or ch == ' ') {
+            } else if (ch == '.' || ch == ' ') {
                 grid[row][col] = EMPTY;
             } else {
                 return false;
@@ -59,7 +59,7 @@ std::string Board::as_string() {
             if (val == EMPTY) {
                 retval.append(".");
             } else {
-                retval.append(std::to_string(val));
+                retval.append(std::to_string(static_cast<long long>(val)));
             }
         }
     }
@@ -82,7 +82,7 @@ void Board::displayNumbers(int row, std::ostream& stream) {
         return;
     }
 
-    int sqr_size = sqrt(SIZE);
+    int sqr_size = sqrt(float(SIZE));
 
     stream << "| ";
     for (int column = 0; column < SIZE; column++) {
@@ -100,7 +100,7 @@ void Board::displayNumbers(int row, std::ostream& stream) {
 }
 
 void Board::displayLineIfNeeded(int row, std::ostream& stream) {
-    int sqr_size = sqrt(SIZE);
+    int sqr_size = sqrt(float(SIZE));
     if (row % sqr_size != 0) {
         return;
     }
@@ -115,17 +115,17 @@ void Board::displayLineIfNeeded(int row, std::ostream& stream) {
 }
 
 int Board::get(int row, int col) {
-    if (row >= SIZE or col >= SIZE) {
-        return NULL;
-    }
 #if DEBUG > 2
     LOG("Board::get(" << row << ", " << col << ")");
 #endif
+    if (row >= SIZE || col >= SIZE) {
+        return INVALID;
+    }
     return board_grid[row][col];
 }
 
 bool Board::set(int row, int col, int value) {
-    if (row < 0 or row >= SIZE or col < 0 or col >= SIZE) {
+    if (row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
         return false;
     }
 #if DEBUG > 2

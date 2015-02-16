@@ -3,9 +3,11 @@ thirdparty
 
 *.sublime-*
 *.executable
-#------------------------------------------------------------------------------
-# Everything beyond this is Github's idea!
-#------------------------------------------------------------------------------
+
+Release
+Debug
+ipch
+
 # Compiled Object files
 *.slo
 *.lo

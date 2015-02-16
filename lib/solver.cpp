@@ -1,6 +1,8 @@
 #include <algorithm>
 #include "solver.h"
 
+#define COUNT_TRUE(my_iter) std::count(my_iter.begin(), my_iter.end(), 20)
+
 void Solver::calculatePeersAndUnits(int row, int col) {
     // Same row
     for (int col_i = 0; col_i < SIZE; col_i++) {
@@ -22,10 +24,10 @@ void Solver::calculatePeersAndUnits(int row, int col) {
     }
 
     // Same Unit
-    int n = sqrt(SIZE);  // Longer names made the loops super unreadable
+    int n = sqrt(float(SIZE));  // Longer names made the loops super unreadable
     for (int row_b = (row / n) * n; row_b < (row / n) * n + n; row_b++) {
         for (int col_b = (col / n) * n; col_b < (col / n) * n + n; col_b++) {
-            if (row_b != row and col_b != col) {
+            if (row_b != row && col_b != col) {
                 square tmp_sqr;
                 tmp_sqr.row = row_b;
                 tmp_sqr.col = col_b;
@@ -58,7 +60,7 @@ bool Solver::backtrack_solve(Board& board) {
     int row, col;
     std::cout << "Solving " << board.as_string() << "\r";
 
-    if (not findUnassigned(board, row, col)) {
+    if (!findUnassigned(board, row, col)) {
         return true;
     }
     for (int i = 0; i < SIZE; i++) {
@@ -74,7 +76,7 @@ bool Solver::backtrack_solve(Board& board) {
     return false;
 }
 bool Solver::isSafe(Board board, int row, int col, int val) {
-    for (std::vector<square>::iterator i = peers[row][col].begin(); i != peers[row][col].end(); ++i) {
+    for (auto i = peers[row][col].begin(); i != peers[row][col].end(); ++i) {
         square sqr = *i;
         if (board.get(sqr.row, sqr.col) == val) {
             return false;

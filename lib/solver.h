@@ -1,8 +1,8 @@
 #ifndef SUDUKU_SOLVER_H
 #define SUDUKU_SOLVER_H
 
+#include <cmath>
 #include <vector>
-#include "math.h"
 #include "board.h"
 
 // Used in definition of peers.
